@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: support
+  name: remote-support-${HOST_NAME}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: remote-support-${HOST_NAME}
+  template:
+    metadata:
+      namespace: support
+      labels:
+        run: remote-support-${HOST_NAME}
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: ${HOST_NAME}
+      containers:
+      - command:
+          - bash
+          - -c
+          - while true; do echo `date`; sleep 5; done
+        securityContext:
+          privileged: true
+        image: platform9/support:latest
+        name: remote-support
+        volumeMounts:
+          - mountPath: /tmp/root
+            name: root
+      hostNetwork: true
+      hostPID: true
+      volumes:
+        - hostPath:
+            path: /
+            type: Directory
+          name: root

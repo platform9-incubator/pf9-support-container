@@ -73,7 +73,7 @@ function job_succeeded()
 }
 
 # delete any existing job
-if kubectl -n support delete job support-bundle ; then
+if kubectl -n support delete job support-bundle 2> /dev/null; then
 	echo deleted old support-bundle job
 fi
 wait_until no_support_bundle_pods 2 30
@@ -83,3 +83,5 @@ wait_until job_succeeded 4 15
 pod=$(kubectl -n support get pods |grep support-bundle|awk '{print $1}')
 kubectl -n support logs --tail 1 ${pod}
 
+# clean up
+kubectl delete -f "${bundlepath}" &> /dev/null

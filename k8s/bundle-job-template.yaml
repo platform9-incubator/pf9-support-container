@@ -22,7 +22,7 @@ spec:
     spec:
       restartPolicy: Never
       nodeSelector:
-        kubernetes.io/hostname: ${HOSTNAME}
+        kubernetes.io/hostname: ${HOST_NAME}
       containers:
       - args:
         - support-bundle.sh

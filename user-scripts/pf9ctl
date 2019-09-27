@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -e
+
+cmd=$1
+
+function usage()
+{
+	echo
+	echo "Usage: pf9ctl register-node | unregister-node"
+	echo
+	echo "Additionally, these environment variables must be defined:"
+	echo "- PF9_FQDN : your management plane DNS name"
+	echo "- PF9_USER : your username / email"
+	echo "- PF9_PASSWORD : your password"
+	echo
+	exit 1
+}
+
+if [[ "${cmd}" != "register-node" ]] && [[ "${cmd}" != "unregister-node" ]]; then
+	usage
+fi
+
+if [[ -z "${PF9_FQDN}" ]] ; then
+	usage
+fi
+if [[ -z "${PF9_USER}" ]] ; then
+	usage
+fi
+if [[ -z "${PF9_PASSWORD}" ]] ; then
+	usage
+fi
+
+if [[ "${cmd}" != 'register-node' ]] ; then
+	echo "Sorry, only register-node is supported at this time"
+	exit 1
+fi
+
+if [[ -z "${KPLANE_API_URL}" ]] ; then
+	echo "Internal error: KPLANE_API_URL is undefined"
+	exit 1
+fi
+
+mp_name=$(echo ${PF9_FQDN} | cut -d. -f1)
+kplane -u -email ${PF9_USER} -pwd ${PF9_PASSWORD} -mp-name ${mp_name} -clust-name system -add-node

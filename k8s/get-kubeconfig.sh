@@ -44,7 +44,7 @@ fi
 # remove newline
 token=$(echo $token | tr -d "\r\n")
 
-if [[ "${DEBUG}" == "yes" ]] ; then
+if [[ "${SHOW_PASSWORDS}" == "yes" ]] ; then
 	echo fqdn: ${fqdn}
 	echo username: ${username}
 	echo password: ${password}
